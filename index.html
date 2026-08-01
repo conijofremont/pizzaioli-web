@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pizzaioli — Pizza de 48h de fermentación en Santiago</title>
+<meta name="description" content="Masa con 48 horas de fermentación, ingredientes italianos y sabores sin fronteras. Pedidos y reservas en Providencia, Santiago Centro y Bellavista.">
+<link rel="icon" type="image/png" href="favicon-pizzaioli.png">
+<link rel="apple-touch-icon" href="favicon-apple-touch.png">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav id="nav">
+  <a href="#inicio" class="nav-logo">
+    <img src="logo-pizzaioli-wordmark.png" alt="Pizzaioli" class="nav-logo-img">
+  </a>
+  <ul class="nav-links">
+    <li><a href="#carta">La carta</a></li>
+    <li><a href="#valores">Nuestro proceso</a></li>
+    <li><a href="#zona">Zona de reparto</a></li>
+    <li><a href="#contacto" class="nav-cta">Pedir por WhatsApp</a></li>
+  </ul>
+  <div class="nav-hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="inicio">
+  <div class="hero-inner">
+    <div class="hero-eyebrow-row">
+      <p class="eyebrow" style="margin-bottom:0">Providencia · Santiago Centro · Bellavista</p>
+    </div>
+    <h1 class="hero-title">
+      Masa de fuego,<br>
+      <span class="line-italic">sabor</span> sin fronteras.
+    </h1>
+
+    <div class="hero-row">
+      <div>
+        <p class="hero-sub">48 horas de fermentación lenta. Harina y tomate San Marzano importados de Italia. Clásicas napolitanas y pizzas de fusión — bulgogi coreano, mongoliana, chifa — nacidas en la misma masa.</p>
+        <div class="hero-actions">
+          <a href="#contacto" class="btn-primary">Pedir por WhatsApp</a>
+          <a href="#carta" class="btn-ghost">Ver la carta →</a>
+        </div>
+      </div>
+
+      <div class="process-strip">
+        <div class="process-step">
+          <svg class="process-icon" viewBox="0 0 34 34"><circle cx="17" cy="19" r="10" fill="none" stroke="#C98A2B" stroke-width="2"/><path d="M10 12 Q17 6 24 12" fill="none" stroke="#C98A2B" stroke-width="2" stroke-linecap="round"/></svg>
+          <p>Amasado<span>Harina italiana + agua + sal</span></p>
+        </div>
+        <div class="process-step">
+          <svg class="process-icon" viewBox="0 0 34 34"><path d="M22 8 A12 12 0 1 0 22 26 A9 9 0 1 1 22 8 Z" fill="#C98A2B"/></svg>
+          <p>Reposo en frío<span>Primeras 24 horas</span></p>
+        </div>
+        <div class="process-step">
+          <svg class="process-icon" viewBox="0 0 34 34"><path d="M17 4 C22 9 22 14 17 17 C12 20 12 25 17 30" fill="none" stroke="#C98A2B" stroke-width="2.2" stroke-linecap="round"/></svg>
+          <p>Fermentación lenta<span>Hasta las 48 horas</span></p>
+        </div>
+        <div class="process-step">
+          <svg class="process-icon" viewBox="0 0 34 34"><path d="M17 4 C10 14 10 20 17 30 C24 20 24 14 17 4 Z" fill="#E8531F"/><path d="M17 14 C14 19 14 22 17 26 C20 22 20 19 17 14 Z" fill="#F5934A"/></svg>
+          <p>Horneado al fuego<span>Horno de leña</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VALORES / PROCESO -->
+<section class="valores" id="valores">
+  <div class="container">
+    <p class="eyebrow center">Lo que no cambia</p>
+    <h2 class="section-title center">Tres cosas que no negociamos.</h2>
+    <div class="valores-grid">
+      <div class="valor-card">
+        <div class="valor-num">48H</div>
+        <h3>Fermentación lenta</h3>
+        <p>Cada masa reposa 48 horas antes de ir al horno. Más digestible, más sabor, más aire en el borde.</p>
+      </div>
+      <div class="valor-card">
+        <div class="valor-num">IT</div>
+        <h3>Ingredientes italianos</h3>
+        <p>Harina y tomate San Marzano enlatado importados de Italia — la base de toda pizza clásica que sirve realmente.</p>
+      </div>
+      <div class="valor-card">
+        <div class="valor-num">∞</div>
+        <h3>Sabores sin fronteras</h3>
+        <p>La misma masa italiana como lienzo para sabores de Seúl, Mongolia y la cocina chifa. Fusión real, no solo el nombre.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CARTA -->
+<section class="carta" id="carta">
+  <div class="container">
+    <p class="eyebrow center">La carta</p>
+    <h2 class="section-title center">Cada pizza, con su origen.</h2>
+
+    <div class="carta-group">
+      <h3 class="carta-group-title"><span class="carta-flag">🍕</span> Clásicas</h3>
+      <div class="carta-grid">
+
+        <article class="pizza-card">
+          <div class="pizza-photo" data-short="Margarita"></div>
+          <div class="pizza-info">
+            <div class="pizza-head"><h4>Margarita</h4><span class="badge-48">48H</span></div>
+            <p>Salsa de tomate, mozzarella y albahaca fresca.</p>
+          </div>
+        </article>
+
+        <article class="pizza-card">
+          <div class="pizza-photo" data-short="Pepperoni"></div>
+          <div class="pizza-info">
+            <div class="pizza-head"><h4>Pepperoni</h4><span class="badge-48">48H</span></div>
+            <p>Doble pepperoni y mozzarella.</p>
+          </div>
+        </article>
+
+        <article class="pizza-card">
+          <div class="pizza-photo" data-short="Napolitana"></div>
+          <div class="pizza-info">
+            <div class="pizza-head"><h4>Napolitana</h4><span class="badge-48">48H</span></div>
+            <p>Tomate, jamón, aceitunas y mozzarella.</p>
+          </div>
+        </article>
+
+        <article class="pizza-card">
+          <div class="pizza-photo" data-short="Española"></div>
+          <div class="pizza-info">
+            <div class="pizza-head"><h4>Española</h4><span class="badge-48">48H</span></div>
+            <p>Chorizo, pimentón, aceitunas y mozzarella.</p>
+          </div>
+        </article>
+
+        <article class="pizza-card">
+          <div class="pizza-photo" data-short="Hawaiana"></div>
+          <div class="pizza-info">
+            <div class="pizza-head"><h4>Hawaiana</h4><span class="badge-48">48H</span></div>
+            <p>Jamón, piña y mozzarella.</p>
+          </div>
+        </article>
+
+        <article class="pizza-card">
+          <div class="pizza-photo" data-short="Mechada"></div>
+          <div class="pizza-info">
+            <div class="pizza-head"><h4>Mechada</h4><span class="badge-48">48H</span></div>
+            <p>Carne mechada, cebolla caramelizada, pimentón y mozzarella.</p>
+          </div>
+        </article>
+
+        <article class="pizza-card">
+          <div class="pizza-photo" data-short="Vegetariana"></div>
+          <div class="pizza-info">
+            <div class="pizza-head"><h4>Vegetariana</h4><span class="badge-48">48H</span></div>
+            <p>Champiñones, pimentón, tomates cherry, mozzarella y hojas verdes frescas.</p>
+          </div>
+        </article>
+
+        <article class="pizza-card">
+          <div class="pizza-photo" data-short="4 Quesos"></div>
+          <div class="pizza-info">
+            <div class="pizza-head"><h4>Cuatro Quesos</h4><span class="badge-48">48H</span></div>
+            <p>Mozzarella y selección de cuatro quesos.</p>
+          </div>
+        </article>
+
+      </div>
+    </div>
+
+    <div class="carta-group fusion">
+      <h3 class="carta-group-title"><span class="carta-flag">🌎</span> Sabores del Mundo</h3>
+      <div class="carta-grid">
+
+        <article class="pizza-card fusion-card">
+          <div class="pizza-photo" data-short="Seoul"></div>
+          <div class="pizza-info">
+            <div class="pizza-head"><h4>🇰🇷 Seoul</h4><span class="badge-48 badge-fusion">48H</span></div>
+            <p>Carne estilo bulgogi, salsa gochujang, mozzarella, cebolla morada, cebollín, sésamo tostado y mayonesa japonesa.</p>
+          </div>
+        </article>
+
+        <article class="pizza-card fusion-card">
+          <div class="pizza-photo" data-short="Mongoliana"></div>
+          <div class="pizza-info">
+            <div class="pizza-head"><h4>🥩 Mongoliana</h4><span class="badge-48 badge-fusion">48H</span></div>
+            <p>Vacuno salteado, cebolla, champiñones, mozzarella, cebollín, sésamo tostado y reducción de salsa mongoliana.</p>
+          </div>
+        </article>
+
+        <article class="pizza-card fusion-card">
+          <div class="pizza-photo" data-short="Chifa"></div>
+          <div class="pizza-info">
+            <div class="pizza-head"><h4>🥢 Chifa</h4><span class="badge-48 badge-fusion">48H</span></div>
+            <p>Pollo marinado, tocino crocante, cebolla salteada, mozzarella, cebollín, aceite de sésamo y reducción de salsa de soya.</p>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ZONA DE REPARTO -->
+<section class="zona" id="zona">
+  <div class="container zona-inner">
+    <div class="zona-text">
+      <p class="eyebrow">Zona de reparto</p>
+      <h2 class="section-title">Llegamos a tu puerta en tres comunas.</h2>
+      <p class="zona-sub">Por ahora entregamos y recibimos reservas solo en estas zonas de Santiago — así garantizamos que tu pizza llegue caliente y en su punto.</p>
+    </div>
+    <div class="zona-list">
+      <div class="zona-item"><span class="zona-dot"></span>Providencia</div>
+      <div class="zona-item"><span class="zona-dot"></span>Santiago Centro</div>
+      <div class="zona-item"><span class="zona-dot"></span>Bellavista</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACTO -->
+<section class="contacto" id="contacto">
+  <div class="container">
+    <p class="eyebrow center">Pedidos y reservas</p>
+    <h2 class="section-title center">Sin carrito. Sin vueltas.<br><span class="accent-italic">Solo escríbenos.</span></h2>
+    <p class="contacto-sub">Coordinamos tu pedido o tu reserva directo por WhatsApp — en minutos, no en formularios.</p>
+    <a href="https://wa.me/56900000000?text=Hola%2C%20quiero%20hacer%20un%20pedido%20en%20Pizzaioli" target="_blank" class="btn-primary btn-lg">Escribir por WhatsApp</a>
+    <div class="contacto-datos">
+      <span>📍 Providencia · Santiago Centro · Bellavista</span>
+      <span>🕐 Martes a domingo, 13:00 – 22:30</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container footer-inner">
+    <span class="footer-logo">Pizzaioli</span>
+    <p class="footer-copy">© 2026 Pizzaioli — Santiago, Chile</p>
+  </div>
+</footer>
+
+<a href="https://wa.me/56900000000?text=Hola%2C%20quiero%20hacer%20un%20pedido%20en%20Pizzaioli" target="_blank" class="wa-float" title="WhatsApp">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="#1A1512"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<script src="main.js"></script>
+</body>
+</html>
