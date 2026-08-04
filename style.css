@@ -231,5 +231,29 @@ footer { background: var(--ink); padding: 44px 0; }
 }
 
 /* LOGO IMG */
-.nav-logo-img { height: 30px; width: auto; display: block; }
+.nav-logo-img { height: 90px; width: auto; display: block; }
 @media (max-width: 640px) { .nav-logo-img { height: 26px; } }
+
+/* HORARIO / RESERVA */
+.horario-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+  max-width: 680px; margin: 0 auto 44px;
+  background: rgba(27,23,18,0.14);
+}
+.horario-card {
+  background: var(--bone); padding: 30px 28px; text-align: left;
+}
+.horario-card-accent { background: var(--bone-deep); }
+.horario-label {
+  font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--bronze); margin-bottom: 14px;
+}
+.horario-main {
+  font-family: 'Instrument Serif', serif; font-weight: 400; font-size: 24px;
+  line-height: 1.25; color: var(--ink); margin-bottom: 12px;
+}
+.horario-note { font-size: 12.5px; line-height: 1.6; color: var(--ink-soft); font-weight: 300; }
+
+@media (max-width: 640px) {
+  .horario-grid { grid-template-columns: 1fr; max-width: 400px; }
+}
