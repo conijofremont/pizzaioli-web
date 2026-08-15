@@ -193,10 +193,49 @@
   </div>
   <div class="cart-footer">
     <div id="cartSummary"></div>
-    <button class="btn-checkout" id="btnCheckout" disabled onclick="alert('Checkout con Webpay: próximo paso a integrar')">
-      Ir a pagar
+    <button class="btn-checkout" id="btnCheckout" disabled onclick="abrirCheckout()">
+      Continuar pedido
     </button>
   </div>
+</div>
+
+<!-- CHECKOUT -->
+<div class="checkout-overlay" id="checkoutOverlay" onclick="cerrarCheckout()"></div>
+<div class="checkout-modal" id="checkoutModal">
+  <button class="checkout-close" onclick="cerrarCheckout()" aria-label="Cerrar">×</button>
+  <h3>Finalizar pedido</h3>
+  <p class="checkout-sub">Completa tus datos y te contactamos por WhatsApp para confirmar.</p>
+
+  <div class="checkout-resumen" id="checkoutResumen"></div>
+
+  <div class="checkout-error" id="checkoutError"></div>
+
+  <form onsubmit="confirmarPedido(event)">
+    <div class="checkout-field">
+      <label for="checkoutNombre">Nombre completo</label>
+      <input type="text" id="checkoutNombre" required placeholder="Tu nombre">
+    </div>
+    <div class="checkout-field">
+      <label for="checkoutTelefono">WhatsApp</label>
+      <input type="tel" id="checkoutTelefono" required placeholder="+56 9 1234 5678">
+    </div>
+    <div class="checkout-field">
+      <label for="checkoutComuna">Comuna</label>
+      <select id="checkoutComuna" required>
+        <option value="">Selecciona tu comuna</option>
+        <option value="Providencia">Providencia</option>
+        <option value="Santiago Centro">Santiago Centro</option>
+        <option value="Bellavista">Bellavista</option>
+      </select>
+    </div>
+    <div class="checkout-field">
+      <label for="checkoutDireccion">Dirección (calle y número)</label>
+      <input type="text" id="checkoutDireccion" placeholder="Ej: Av. Providencia 1234, depto 56">
+    </div>
+    <button type="submit" class="btn-primary btn-lg" id="btnConfirmarPedido" style="width:100%; justify-content:center;">
+      Confirmar pedido
+    </button>
+  </form>
 </div>
 
 <!-- BARRA FIJA DE CARRITO -->
@@ -214,6 +253,7 @@
 
 <script src="main.js"></script>
 <script src="cart.js"></script>
+<script src="checkout.js"></script>
 <script src="supabase-menu.js"></script>
 </body>
 </html>
