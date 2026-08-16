@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seguimiento de pedido — Pizzaioli</title>
+<link rel="icon" type="image/png" href="img/favicon-pizzaioli.png">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="cart-styles.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+  body { display:flex; align-items:center; justify-content:center; min-height:100vh; padding:24px; }
+  .seg-card { width:100%; max-width:460px; background:var(--bone-deep); border-radius:16px; padding:36px 32px; }
+  .seg-logo { text-align:center; margin-bottom:24px; }
+  .seg-logo img { height:40px; margin:0 auto; }
+  .seg-field { display:flex; gap:8px; margin-bottom:24px; }
+  .seg-field input { flex:1; padding:12px 14px; border-radius:8px; border:1px solid rgba(27,23,18,0.18); font-size:14px; }
+  .seg-field button { background:var(--ink); color:var(--bone); border:none; padding:12px 20px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; }
+  .seg-field button:hover { background:var(--bronze); }
+  .seg-stepper { display:flex; flex-direction:column; gap:0; margin-top:20px; }
+  .seg-step { display:flex; align-items:center; gap:14px; padding:14px 0; position:relative; }
+  .seg-step:not(:last-child)::after {
+    content:''; position:absolute; left:13px; top:38px; width:2px; height:calc(100% - 6px);
+    background: rgba(27,23,18,0.12);
+  }
+  .seg-step.done:not(:last-child)::after { background: var(--bronze); }
+  .seg-dot {
+    width:28px; height:28px; border-radius:50%; flex-shrink:0; z-index:1;
+    display:flex; align-items:center; justify-content:center;
+    background: var(--bone); border:2px solid rgba(27,23,18,0.18); color: var(--ink-faint); font-size:13px;
+  }
+  .seg-step.done .seg-dot { background: var(--bronze); border-color: var(--bronze); color: var(--bone); }
+  .seg-step.current .seg-dot { background: var(--ink); border-color: var(--ink); color: var(--bone); }
+  .seg-step p { font-family:'Instrument Serif', serif; font-size:17px; color: var(--ink-faint); }
+  .seg-step.done p, .seg-step.current p { color: var(--ink); }
+  .seg-info { text-align:center; color: var(--ink-faint); font-size:13px; }
+  .seg-error { display:none; background: rgba(122,43,38,0.08); color:#7A2B26; font-size:13px; padding:10px 14px; border-radius:8px; margin-bottom:16px; }
+  .seg-total { text-align:center; font-family:'Instrument Serif', serif; font-size:24px; margin: 18px 0 6px; }
+</style>
+</head>
+<body>
+
+<div class="seg-card">
+  <div class="seg-logo"><img src="img/logo-pizzaioli-wordmark.png" alt="Pizzaioli"></div>
+
+  <div class="seg-field">
+    <input type="text" id="inputCodigo" placeholder="Tu código de pedido (ej. a1b2c3d4)">
+    <button onclick="buscarPedido()">Buscar</button>
+  </div>
+
+  <div class="seg-error" id="segError"></div>
+
+  <div id="segResultado" style="display:none">
+    <p class="seg-info">Pedido de <strong id="segNombre"></strong></p>
+    <p class="seg-total" id="segTotal"></p>
+
+    <div class="seg-stepper" id="segStepper"></div>
+  </div>
+</div>
+
+<script>
+  const SUPABASE_URL = 'https://myjlesckaqiohmxyjppp.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_VIFT-ZGkZ7_wGjtzCRIgiA_EXB3xHu8';
+  const { createClient } = supabase;
+  const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  const ETAPAS = [
+    { key: 'recibido', label: 'Pedido recibido' },
+    { key: 'preparando', label: 'Preparando tu pizza' },
+    { key: 'en_camino', label: 'En camino' },
+    { key: 'entregado', label: 'Entregado' },
+  ];
+
+  let canalActivo = null;
+
+  function formatearCLP(v) { return '$' + v.toLocaleString('es-CL'); }
+
+  function pintarEstado(pedido) {
+    document.getElementById('segResultado').style.display = 'block';
+    document.getElementById('segNombre').textContent = pedido.nombre_cliente;
+    document.getElementById('segTotal').textContent = formatearCLP(pedido.total);
+
+    const idxActual = ETAPAS.findIndex(e => e.key === pedido.estado);
+    const stepper = document.getElementById('segStepper');
+
+    if (pedido.estado === 'cancelado') {
+      stepper.innerHTML = `<p style="color:#7A2B26; text-align:center;">Este pedido fue cancelado.</p>`;
+      return;
+    }
+
+    stepper.innerHTML = ETAPAS.map((etapa, i) => {
+      let clase = '';
+      if (i < idxActual) clase = 'done';
+      if (i === idxActual) clase = 'current';
+      const icono = i < idxActual ? '✓' : (i + 1);
+      return `<div class="seg-step ${clase}"><div class="seg-dot">${icono}</div><p>${etapa.label}</p></div>`;
+    }).join('');
+  }
+
+  async function buscarPedido() {
+    const codigo = document.getElementById('inputCodigo').value.trim();
+    const errorEl = document.getElementById('segError');
+    errorEl.style.display = 'none';
+    document.getElementById('segResultado').style.display = 'none';
+
+    if (!codigo) return;
+
+    const { data, error } = await db.rpc('get_order_status', { p_codigo: codigo });
+
+    if (error || !data || data.length === 0) {
+      errorEl.textContent = 'No encontramos un pedido con ese código. Revisa que esté bien escrito.';
+      errorEl.style.display = 'block';
+      return;
+    }
+
+    const pedido = data[0];
+    pintarEstado(pedido);
+    suscribirActualizaciones(codigo);
+  }
+
+  function suscribirActualizaciones(codigo) {
+    if (canalActivo) db.removeChannel(canalActivo);
+    canalActivo = db.channel('pedido-' + codigo)
+      .on('postgres_changes', {
+        event: 'UPDATE', schema: 'public', table: 'orders',
+        filter: `codigo_seguimiento=eq.${codigo}`
+      }, (payload) => {
+        pintarEstado(payload.new);
+      })
+      .subscribe();
+  }
+
+  // Si llegan con ?codigo=xxxx en la URL, buscar automáticamente
+  const params = new URLSearchParams(window.location.search);
+  const codigoUrl = params.get('codigo');
+  if (codigoUrl) {
+    document.getElementById('inputCodigo').value = codigoUrl;
+    buscarPedido();
+  }
+</script>
+</body>
+</html>
