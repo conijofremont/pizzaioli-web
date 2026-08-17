@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel de pedidos — Pizzaioli</title>
+<link rel="icon" type="image/png" href="img/favicon-pizzaioli.png">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="cart-styles.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+  body { padding: 40px 24px; max-width: 900px; margin: 0 auto; }
+  .admin-login { max-width: 360px; margin: 80px auto; background: var(--bone-deep); border-radius: 16px; padding: 32px; }
+  .admin-login input { width:100%; padding:12px 14px; border-radius:8px; border:1px solid rgba(27,23,18,0.18); margin-bottom:12px; font-size:14px; }
+  .admin-login button { width:100%; background:var(--ink); color:var(--bone); border:none; padding:13px; border-radius:8px; font-weight:600; cursor:pointer; }
+  .admin-header { display:flex; align-items:center; justify-content:space-between; margin-bottom: 30px; }
+  .admin-header h1 { font-family:'Instrument Serif', serif; font-size:28px; font-weight:400; }
+  .btn-logout { background:none; border:1px solid rgba(27,23,18,0.2); padding:8px 16px; border-radius:20px; font-size:12px; cursor:pointer; }
+  .order-card { background: var(--bone-deep); border-radius: 12px; padding: 18px 22px; margin-bottom: 14px; }
+  .order-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; }
+  .order-codigo { font-family:'Instrument Serif', serif; font-size:19px; }
+  .order-fecha { font-size:11.5px; color:var(--ink-faint); }
+  .order-cliente { font-size:13.5px; color: var(--ink-soft); margin-bottom: 4px; }
+  .order-total { font-family:'Instrument Serif', serif; font-style:italic; color:var(--bronze); font-size:16px; }
+  .order-estado-actual {
+    display:inline-block; font-size:10.5px; font-weight:700; letter-spacing:0.5px; text-transform:uppercase;
+    padding:4px 10px; border-radius:20px; margin: 8px 0 12px;
+  }
+  .estado-recibido { background: rgba(140,106,63,0.15); color: var(--bronze); }
+  .estado-preparando { background: rgba(232,83,31,0.12); color: #B3541F; }
+  .estado-en_camino { background: rgba(62,125,68,0.12); color: #3E7D44; }
+  .estado-entregado { background: rgba(27,23,18,0.1); color: var(--ink-soft); }
+  .estado-cancelado { background: rgba(122,43,38,0.1); color: #7A2B26; }
+  .order-actions { display:flex; gap: 8px; flex-wrap: wrap; }
+  .order-actions button {
+    font-size:12px; font-weight:600; padding:8px 14px; border-radius:20px; border:1px solid rgba(27,23,18,0.18);
+    background: #fff; cursor:pointer; transition: all 0.2s;
+  }
+  .order-actions button:hover { background: var(--ink); color: var(--bone); border-color: var(--ink); }
+  #adminPanel { display:none; }
+</style>
+</head>
+<body>
+
+<div class="admin-login" id="adminLogin">
+  <h2 style="font-family:'Instrument Serif', serif; font-size:24px; margin-bottom:20px; text-align:center;">Panel Pizzaioli</h2>
+  <div id="loginError" style="display:none; color:#7A2B26; font-size:13px; margin-bottom:12px;"></div>
+  <input type="email" id="loginEmail" placeholder="Correo">
+  <input type="password" id="loginPassword" placeholder="Contraseña">
+  <button onclick="iniciarSesion()">Entrar</button>
+</div>
+
+<div id="adminPanel">
+  <div class="admin-header">
+    <h1>Pedidos</h1>
+    <button class="btn-logout" onclick="cerrarSesion()">Cerrar sesión</button>
+  </div>
+  <div id="listaOrdenes">Cargando pedidos...</div>
+</div>
+
+<script>
+  const SUPABASE_URL = 'https://myjlesckaqiohmxyjppp.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_VIFT-ZGkZ7_wGjtzCRIgiA_EXB3xHu8';
+  const { createClient } = supabase;
+  const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  const ETAPAS = ['recibido', 'preparando', 'en_camino', 'entregado'];
+  const LABELS = { recibido: 'Recibido', preparando: 'Preparando', en_camino: 'En camino', entregado: 'Entregado', cancelado: 'Cancelado' };
+
+  const MENSAJES_ESTADO = {
+    recibido: (p) => `¡Hola ${p.nombre_cliente}! 🍕 Recibimos tu pedido #${p.codigo_seguimiento} en Pizzaioli y ya lo estamos procesando. Te avisamos apenas entre en preparación.`,
+    preparando: (p) => `¡Tu pedido #${p.codigo_seguimiento} ya está en el horno! 🔥 Te avisamos cuando salga en camino.`,
+    en_camino: (p) => `¡Tu pedido #${p.codigo_seguimiento} va en camino! 🛵 Debería llegar pronto a ${p.comuna}.`,
+    entregado: (p) => `¡Que la disfrutes! 🍕❤️ Gracias por tu pedido #${p.codigo_seguimiento} en Pizzaioli. Cualquier cosa, escríbenos por aquí mismo.`,
+  };
+
+  let ultimosPedidos = [];
+
+  function enviarNotificacionWhatsApp(pedido, nuevoEstado) {
+    const generarMensaje = MENSAJES_ESTADO[nuevoEstado];
+    if (!generarMensaje) return; // no hay mensaje para "cancelado", por ejemplo
+    const telefono = pedido.telefono.replace(/[^0-9]/g, ''); // solo dígitos, para el link de wa.me
+    const mensaje = encodeURIComponent(generarMensaje(pedido));
+    window.open(`https://wa.me/${telefono}?text=${mensaje}`, '_blank');
+  }
+
+  function formatearCLP(v) { return '$' + v.toLocaleString('es-CL'); }
+  function formatearFecha(iso) {
+    return new Date(iso).toLocaleString('es-CL', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' });
+  }
+
+  async function iniciarSesion() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+    const { error } = await db.auth.signInWithPassword({ email, password });
+    if (error) {
+      const el = document.getElementById('loginError');
+      el.textContent = 'Correo o contraseña incorrectos.';
+      el.style.display = 'block';
+      return;
+    }
+    mostrarPanel();
+  }
+
+  async function cerrarSesion() {
+    await db.auth.signOut();
+    location.reload();
+  }
+
+  async function mostrarPanel() {
+    document.getElementById('adminLogin').style.display = 'none';
+    document.getElementById('adminPanel').style.display = 'block';
+    cargarOrdenes();
+  }
+
+  async function cargarOrdenes() {
+    const { data, error } = await db
+      .from('orders')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(50);
+
+    const cont = document.getElementById('listaOrdenes');
+    if (error) {
+      cont.innerHTML = '<p>Error cargando pedidos: ' + error.message + '</p>';
+      return;
+    }
+    if (data.length === 0) {
+      cont.innerHTML = '<p style="color:var(--ink-faint)">Todavía no hay pedidos.</p>';
+      return;
+    }
+
+    ultimosPedidos = data;
+
+    cont.innerHTML = data.map(pedido => {
+      const idxActual = ETAPAS.indexOf(pedido.estado);
+      const siguientes = pedido.estado === 'cancelado' ? [] : ETAPAS.slice(idxActual + 1);
+
+      return `
+        <div class="order-card">
+          <div class="order-top">
+            <div>
+              <span class="order-codigo">#${pedido.codigo_seguimiento}</span>
+              <div class="order-fecha">${formatearFecha(pedido.created_at)}</div>
+            </div>
+            <span class="order-total">${formatearCLP(pedido.total)}</span>
+          </div>
+          <div class="order-cliente">${pedido.nombre_cliente} · ${pedido.telefono} · ${pedido.comuna}</div>
+          <div class="order-estado-actual estado-${pedido.estado}">${LABELS[pedido.estado]}</div>
+          <div class="order-actions">
+            <button onclick="window.open('comanda.html?id=${pedido.id}', '_blank')" style="background:#1B1712; color:#fff; border-color:#1B1712;">🖨 Comanda</button>
+            ${siguientes.map(s => `<button onclick="cambiarEstado('${pedido.id}', '${s}')">Marcar: ${LABELS[s]}</button>`).join('')}
+            ${pedido.estado !== 'cancelado' && pedido.estado !== 'entregado' ? `<button onclick="cambiarEstado('${pedido.id}', 'cancelado')" style="color:#7A2B26;">Cancelar</button>` : ''}
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  async function cambiarEstado(orderId, nuevoEstado) {
+    const { error } = await db.from('orders').update({ estado: nuevoEstado, updated_at: new Date().toISOString() }).eq('id', orderId);
+    if (error) {
+      alert('Error actualizando el pedido: ' + error.message);
+      return;
+    }
+
+    // Buscar los datos del pedido para armar el mensaje de WhatsApp
+    const pedido = ultimosPedidos.find(p => p.id === orderId);
+    if (pedido) {
+      enviarNotificacionWhatsApp({ ...pedido, estado: nuevoEstado }, nuevoEstado);
+    }
+
+    cargarOrdenes();
+  }
+
+  // Revisar si ya hay sesión activa al cargar
+  db.auth.getSession().then(({ data }) => {
+    if (data.session) mostrarPanel();
+  });
+</script>
+</body>
+</html>
