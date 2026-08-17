@@ -1,215 +1,259 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pizzería - Masa Madre & Tradición</title>
-  
-  <!-- CSS Principal -->
-  <link rel="stylesheet" href="style.css">
-  
-  <!-- Estilos inline de respaldo/ajuste directo -->
-  <style>
-    /* Hero / Portada - Ajuste de Imagen */
-    .hero-photo-wrap {
-      position: absolute;
-      top: 50%;
-      right: 5%;
-      transform: translateY(-50%);
-      width: min(450px, 38vw);
-      height: min(450px, 38vw);
-      border-radius: 50%;
-      overflow: hidden;
-      z-index: 1;
-      border: 1px solid rgba(27,23,18,0.10);
-      box-shadow: 0 40px 90px rgba(27,23,18,0.16);
-      background: #f8f6f0;
-    }
-
-    .hero-photo-wrap img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center;
-      display: block;
-    }
-
-    /* Carta - Marcos Circulares Perfectos */
-    .carta-card-media {
-      position: relative;
-      width: 140px;
-      height: 140px;
-      margin: 0 auto 16px auto;
-      border-radius: 50%;
-      overflow: hidden;
-      background: #f8f6f0;
-      border: 1px solid rgba(27, 23, 18, 0.08);
-    }
-
-    .carta-card-media img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center;
-      border-radius: 50%;
-      display: block;
-    }
-
-    /* Modal de Checkout */
-    .checkout-modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.6);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .checkout-modal.active {
-      display: flex;
-    }
-
-    .checkout-content {
-      background: #fff;
-      padding: 24px;
-      border-radius: 12px;
-      max-width: 480px;
-      width: 90%;
-      position: relative;
-    }
-
-    .close-modal {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      background: none;
-      border: none;
-      font-size: 20px;
-      cursor: pointer;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pizzaioli — Pizza de 48h de fermentación en Santiago</title>
+<meta name="description" content="Masa con 48 horas de fermentación, ingredientes italianos y sabores sin fronteras. Pedidos y reservas en Providencia, Santiago Centro y Bellavista.">
+<link rel="icon" type="image/png" href="img/favicon-pizzaioli.png">
+<link rel="apple-touch-icon" href="img/favicon-apple-touch.png">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="cart-styles.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 </head>
 <body>
 
-  <!-- HEADER / NAVEGACIÓN -->
-  <header class="header">
-    <div class="container header-container">
-      <a href="#" class="logo">Pizzería</a>
-      <nav class="nav">
-        <a href="#hero">Inicio</a>
-        <a href="#carta">Carta</a>
-        <a href="#nosotros">Nosotros</a>
-      </nav>
-      <div class="cart-icon-wrap" onclick="toggleCarrito()">
-        <span class="cart-icon">🛒</span>
-        <span id="cart-count" class="cart-count">0</span>
+<nav id="nav">
+  <a href="#inicio" class="nav-logo">
+    <img src="img/logo-pizzaioli-wordmark.png" alt="Pizzaioli" class="nav-logo-img">
+  </a>
+  <ul class="nav-links">
+    <li><a href="#carta">La carta</a></li>
+    <li><a href="#valores">Nuestro proceso</a></li>
+    <li><a href="#zona">Zona de reparto</a></li>
+    <li><a href="#contacto" class="nav-cta">Pedir por WhatsApp</a></li>
+    <li>
+      <div class="nav-cart" onclick="abrirCarrito()" aria-label="Ver carrito">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+        <span class="cart-count" id="cartCount">0</span>
       </div>
-    </div>
-  </header>
+    </li>
+  </ul>
+  <div class="nav-hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
 
-  <!-- HERO / PORTADA -->
-  <section id="hero" class="hero-section" style="position: relative; min-height: 80vh; display: flex; align-items: center;">
-    <div class="container hero-container" style="position: relative; z-index: 2; width: 100%;">
-      <div class="hero-text-content" style="max-width: 550px;">
-        <h1 class="hero-title">Masa Madre & Fermentación 48H</h1>
-        <p class="hero-subtitle">Ingredientes seleccionados, horneados a alta temperatura para lograr el borde perfecto.</p>
-        <a href="#carta" class="btn-primary">Ver la Carta</a>
+<!-- HERO -->
+<section class="hero" id="inicio">
+  <div class="hero-inner">
+    <div class="hero-eyebrow-row">
+      <p class="eyebrow" style="margin-bottom:0">Providencia · Santiago Centro · Bellavista</p>
+    </div>
+    <h1 class="hero-title">
+      Masa de fuego,<br>
+      <span class="line-italic">sabor</span> sin fronteras.
+    </h1>
+
+    <p class="hero-sub">48 horas de fermentación lenta. Harina y tomate San Marzano importados de Italia. Clásicas napolitanas y pizzas de fusión — bulgogi coreano, mongoliana, chifa — nacidas en la misma masa.</p>
+    <div class="hero-actions">
+      <a href="#carta" class="btn-primary">Ver la carta y pedir</a>
+      <a href="#zona" class="btn-ghost">Zona de reparto →</a>
+    </div>
+
+    <div class="process-strip">
+      <div class="process-step">
+        <svg class="process-icon" viewBox="0 0 34 34"><circle cx="17" cy="19" r="10" fill="none" stroke="#C98A2B" stroke-width="2"/><path d="M10 12 Q17 6 24 12" fill="none" stroke="#C98A2B" stroke-width="2" stroke-linecap="round"/></svg>
+        <p>Amasado<span>Harina italiana + agua + sal</span></p>
       </div>
-    </div>
-    <div class="hero-photo-wrap">
-      <img src="img/hero-pizza.jpg" alt="Pizza de Masa Madre Recién Horneada" id="heroImage" onerror="this.src='https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=800&q=80'">
-    </div>
-  </section>
-
-  <!-- SECCIÓN CARTA / MENÚ -->
-  <section id="carta" class="carta-section" style="padding: 60px 0;">
-    <div class="container">
-      <h2 class="section-title" style="text-align: center; margin-bottom: 40px;">Nuestra Carta</h2>
-      
-      <!-- Grid dinámico donde Supabase renderiza las pizzas -->
-      <div id="menu-grid" class="carta-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px;">
-        <!-- Tarjeta de Ejemplo (Si Supabase no ha cargado aún) -->
-        <div class="carta-card" style="text-align: center;">
-          <div class="carta-card-media">
-            <img src="https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?auto=format&fit=crop&w=500&q=80" alt="Pizza Margherita">
-          </div>
-          <div class="carta-card-content">
-            <h4 class="carta-card-title">Margherita</h4>
-            <span class="carta-card-price">$8.900</span>
-            <p class="carta-card-desc">Salsa de tomate San Marzano, fior di latte, albahaca fresca y aceite de oliva extra virgen.</p>
-            <button class="btn-primary btn-add" onclick="agregarAlCarrito('margherita')">Agregar al Carrito</button>
-          </div>
-        </div>
+      <div class="process-step">
+        <svg class="process-icon" viewBox="0 0 34 34"><path d="M22 8 A12 12 0 1 0 22 26 A9 9 0 1 1 22 8 Z" fill="#C98A2B"/></svg>
+        <p>Reposo en frío<span>Primeras 24 horas</span></p>
       </div>
-    </div>
-  </section>
-
-  <!-- MODAL DE CHECKOUT / PAGO -->
-  <div class="checkout-modal" id="checkoutModal">
-    <div class="checkout-content">
-      <button class="close-modal" onclick="cerrarCheckout()">&times;</button>
-      <h3>Finalizar Compra</h3>
-      
-      <form id="formCheckout" onsubmit="procesarPagoTransbank(event)">
-        <div class="checkout-field" style="margin-bottom: 15px;">
-          <label for="nombreCliente" style="display: block; margin-bottom: 5px;">Nombre Completo</label>
-          <input type="text" id="nombreCliente" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
-        </div>
-
-        <div class="checkout-field" style="margin-bottom: 15px;">
-          <label for="emailCliente" style="display: block; margin-bottom: 5px;">Correo Electrónico</label>
-          <input type="email" id="emailCliente" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
-        </div>
-
-        <div class="checkout-field" style="margin-bottom: 15px;">
-          <label for="direccionCliente" style="display: block; margin-bottom: 5px;">Dirección de Envío</label>
-          <input type="text" id="direccionCliente" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
-        </div>
-
-        <!-- MÉTODOS DE PAGO: TRANSBANK EN PRUEBA -->
-        <div class="checkout-field" style="margin-bottom: 20px;">
-          <label style="display: block; margin-bottom: 8px; font-weight: 600;">Método de Pago</label>
-          <div class="pago-transbank-box" style="padding: 12px; border: 1px solid rgba(27,23,18,0.18); border-radius: 8px; background: #fdfdfd; display: flex; align-items: center; gap: 10px;">
-            <input type="radio" id="pagoWebpay" name="metodoPago" value="webpay" checked>
-            <label for="pagoWebpay" style="margin: 0; cursor: pointer; font-size: 14px; font-weight: 500;">
-              Webpay Plus / Transbank <span style="font-size: 11px; color: #7A2B26; font-weight: 600;">(Modo Prueba)</span>
-            </label>
-          </div>
-        </div>
-
-        <button type="submit" class="btn-primary" style="width: 100%; padding: 12px; font-weight: bold;">Pagar con Webpay</button>
-      </form>
+      <div class="process-step">
+        <svg class="process-icon" viewBox="0 0 34 34"><path d="M17 4 C22 9 22 14 17 17 C12 20 12 25 17 30" fill="none" stroke="#C98A2B" stroke-width="2.2" stroke-linecap="round"/></svg>
+        <p>Fermentación lenta<span>Hasta las 48 horas</span></p>
+      </div>
+      <div class="process-step">
+        <svg class="process-icon" viewBox="0 0 34 34"><path d="M17 4 C10 14 10 20 17 30 C24 20 24 14 17 4 Z" fill="#E8531F"/><path d="M17 14 C14 19 14 22 17 26 C20 22 20 19 17 14 Z" fill="#F5934A"/></svg>
+        <p>Horneado al fuego<span>Horno de leña</span></p>
+      </div>
     </div>
   </div>
 
-  <!-- SCRIPTS -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-menu.js"></script>
-  <script>
-    function toggleCarrito() {
-      const modal = document.getElementById('checkoutModal');
-      modal.classList.toggle('active');
-    }
+  <div class="hero-photo-wrap">
+    <img src="img/pizza_portada.jpg" alt="Pizza recién horneada Pizzaioli">
+  </div>
+</section>
 
-    function cerrarCheckout() {
-      document.getElementById('checkoutModal').classList.remove('active');
-    }
+<!-- VALORES / PROCESO -->
+<section class="valores" id="valores">
+  <div class="container">
+    <p class="eyebrow center">Lo que no cambia</p>
+    <h2 class="section-title center">Tres cosas que no negociamos.</h2>
+    <div class="valores-grid">
+      <div class="valor-card">
+        <div class="valor-num">48H</div>
+        <h3>Fermentación lenta</h3>
+        <p>Cada masa reposa 48 horas antes de ir al horno. Más digestible, más sabor, más aire en el borde.</p>
+      </div>
+      <div class="valor-card">
+        <div class="valor-num">IT</div>
+        <h3>Ingredientes italianos</h3>
+        <p>Harina y tomate San Marzano enlatado importados de Italia — la base de toda pizza clásica que sirve realmente.</p>
+      </div>
+      <div class="valor-card">
+        <div class="valor-num">∞</div>
+        <h3>Sabores sin fronteras</h3>
+        <p>La misma masa italiana como lienzo para sabores de Seúl, Mongolia y la cocina chifa. Fusión real, no solo el nombre.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-    function agregarAlCarrito(id) {
-      alert('Producto agregado al carrito');
-      const count = document.getElementById('cart-count');
-      count.innerText = parseInt(count.innerText) + 1;
-    }
+<!-- CARTA (cargada dinámicamente desde Supabase) -->
+<section class="carta" id="carta">
+  <div class="container">
+    <p class="eyebrow center">La carta</p>
+    <h2 class="section-title center">Cada pizza, con su origen.</h2>
+  </div>
 
-    function procesarPagoTransbank(event) {
-      event.preventDefault();
-      alert('Redirigiendo a la pasarela de prueba Webpay Transbank...');
-      // Aquí va la llamada a la Edge Function o Backend para iniciar la transacción de Transbank
-    }
-  </script>
+  <div class="carta-pills">
+    <a href="#carta-clasicas" class="pill active">Clásicas</a>
+    <a href="#carta-fusion" class="pill">Sabores del Mundo</a>
+  </div>
+
+  <div class="container">
+    <div class="carta-group" id="carta-clasicas">
+      <h3 class="carta-group-title"><span class="carta-flag">🍕</span> Clásicas</h3>
+      <div class="carta-grid" id="cartaClasicas">
+        <p style="color:var(--ink-faint); font-size:14px;">Cargando carta...</p>
+      </div>
+    </div>
+
+    <div class="carta-group fusion" id="carta-fusion">
+      <h3 class="carta-group-title"><span class="carta-flag">🌎</span> Sabores del Mundo</h3>
+      <div class="carta-grid" id="cartaFusion"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ZONA DE REPARTO -->
+<section class="zona" id="zona">
+  <div class="container zona-inner">
+    <div class="zona-text">
+      <p class="eyebrow">Zona de reparto</p>
+      <h2 class="section-title">Llegamos a tu puerta en tres comunas.</h2>
+      <p class="zona-sub">Por ahora entregamos y recibimos reservas solo en estas zonas de Santiago — así garantizamos que tu pizza llegue caliente y en su punto.</p>
+    </div>
+    <div class="zona-list">
+      <div class="zona-item"><span class="zona-dot"></span>Providencia</div>
+      <div class="zona-item"><span class="zona-dot"></span>Santiago Centro</div>
+      <div class="zona-item"><span class="zona-dot"></span>Bellavista</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACTO -->
+<section class="contacto" id="contacto">
+  <div class="container">
+    <p class="eyebrow center">Pedidos y reservas</p>
+    <h2 class="section-title center">Sin vueltas.<br><span class="accent-italic">Solo pide.</span></h2>
+    <p class="contacto-sub">Abrimos viernes y sábado — tomamos pedidos en el momento durante todo nuestro horario. Si prefieres asegurar tu pizza con anticipación, reserva entre lunes y jueves y obtén un descuento.</p>
+
+    <div class="horario-grid">
+      <div class="horario-card">
+        <p class="horario-label">Horario de atención</p>
+        <p class="horario-main">Viernes y sábado<br>18:00 – 03:00 hrs</p>
+        <p class="horario-note">Pedidos en el momento, sin reserva previa.</p>
+      </div>
+      <div class="horario-card horario-card-accent">
+        <p class="horario-label">Reserva y ahorra</p>
+        <p class="horario-main">10% dcto.<br>Lunes a jueves</p>
+        <p class="horario-note">Reserva con anticipación y obtén 10% de descuento en el total de tu pedido.</p>
+      </div>
+    </div>
+
+    <a href="#carta" class="btn-primary btn-lg">Ver la carta y pedir</a>
+    <div class="contacto-datos">
+      <span>📍 Providencia · Santiago Centro · Bellavista</span>
+      <span>🕐 Viernes y sábado, 18:00 – 03:00</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container footer-inner">
+    <span class="footer-logo">Pizzaioli</span>
+    <p class="footer-copy">© 2026 Pizzaioli — Santiago, Chile · Sitio por <a href="https://ruajdigital.cl" target="_blank" class="footer-credit">Ruaj Digital</a></p>
+  </div>
+</footer>
+
+<!-- CARRITO: overlay + panel lateral -->
+<div class="cart-overlay" id="cartOverlay" onclick="cerrarCarrito()"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-header">
+    <h3>Tu pedido</h3>
+    <button class="cart-close" onclick="cerrarCarrito()" aria-label="Cerrar">×</button>
+  </div>
+  <div class="cart-body">
+    <div class="cart-horario-aviso" id="cartHorarioAviso"></div>
+    <div id="cartItems"></div>
+  </div>
+  <div class="cart-footer">
+    <div id="cartSummary"></div>
+    <button class="btn-checkout" id="btnCheckout" disabled onclick="abrirCheckout()">
+      Continuar pedido
+    </button>
+  </div>
+</div>
+
+<!-- CHECKOUT -->
+<div class="checkout-overlay" id="checkoutOverlay" onclick="cerrarCheckout()"></div>
+<div class="checkout-modal" id="checkoutModal">
+  <button class="checkout-close" onclick="cerrarCheckout()" aria-label="Cerrar">×</button>
+  <h3>Finalizar pedido</h3>
+  <p class="checkout-sub">Completa tus datos y te contactamos por WhatsApp para confirmar.</p>
+
+  <div class="checkout-resumen" id="checkoutResumen"></div>
+
+  <div class="checkout-error" id="checkoutError"></div>
+
+  <form onsubmit="confirmarPedido(event)">
+    <div class="checkout-field">
+      <label for="checkoutNombre">Nombre completo</label>
+      <input type="text" id="checkoutNombre" required placeholder="Tu nombre">
+    </div>
+    <div class="checkout-field">
+      <label for="checkoutTelefono">WhatsApp</label>
+      <input type="tel" id="checkoutTelefono" required placeholder="+56 9 1234 5678">
+    </div>
+    <div class="checkout-field">
+      <label for="checkoutComuna">Comuna</label>
+      <select id="checkoutComuna" required>
+        <option value="">Selecciona tu comuna</option>
+        <option value="Providencia">Providencia</option>
+        <option value="Santiago Centro">Santiago Centro</option>
+        <option value="Bellavista">Bellavista</option>
+      </select>
+    </div>
+    <div class="checkout-field">
+      <label for="checkoutDireccion">Dirección (calle y número)</label>
+      <input type="text" id="checkoutDireccion" placeholder="Ej: Av. Providencia 1234, depto 56">
+    </div>
+    <button type="submit" class="btn-primary btn-lg" id="btnConfirmarPedido" style="width:100%; justify-content:center;">
+      Confirmar pedido
+    </button>
+  </form>
+</div>
+
+<!-- BARRA FIJA DE CARRITO -->
+<div class="sticky-cart-bar" id="stickyCartBar">
+  <div class="sticky-cart-info">
+    <span class="sticky-cart-count" id="stickyCartCount">0 items</span>
+    <span class="sticky-cart-total" id="stickyCartTotal">$0</span>
+  </div>
+  <button class="sticky-cart-btn" onclick="abrirCarrito()">Ver carrito →</button>
+</div>
+
+<a href="https://wa.me/56900000000?text=Hola%2C%20quiero%20hacer%20un%20pedido%20en%20Pizzaioli" target="_blank" class="wa-float" title="WhatsApp">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="#1A1512"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<script src="main.js"></script>
+<script src="cart.js"></script>
+<script src="checkout.js"></script>
+<script src="supabase-menu.js"></script>
 </body>
 </html>
