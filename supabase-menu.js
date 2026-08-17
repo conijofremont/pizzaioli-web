@@ -118,23 +118,3 @@ document.addEventListener('DOMContentLoaded', () => {
   cargarMenu();
   initCartaPills();
 });
-
-// Ejemplo de la función que renderiza cada producto de la carta
-function crearTarjetaPizza(pizza) {
-  return `
-    <div class="carta-card">
-      <div class="carta-card-media">
-        <img src="${pizza.imagen_url || 'img/pizza-placeholder.jpg'}" alt="${pizza.nombre}" loading="lazy">
-      </div>
-      <div class="carta-card-content">
-        <div class="carta-card-header">
-          <h4 class="carta-card-title">${pizza.nombre}</h4>
-          <span class="carta-card-price">$${pizza.precio.toLocaleString('es-CL')}</span>
-        </div>
-        <span class="carta-tag">${pizza.etiqueta || '48H'}</span>
-        <p class="carta-card-desc">${pizza.descripcion}</p>
-        <button class="btn-primary btn-add" onclick="agregarAlCarrito('${pizza.id}')">Agregar</button>
-      </div>
-    </div>
-  `;
-}
