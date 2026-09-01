@@ -166,6 +166,10 @@ nav {
   display: flex; align-items: center; justify-content: center;
   border: 1px solid rgba(27,23,18,0.18);
   background: var(--bone-deep);
+  overflow: hidden;
+}
+.pizza-photo img {
+  width: 100%; height: 100%; object-fit: cover; border-radius: 50%;
 }
 .pizza-photo::after {
   content: attr(data-short);
@@ -280,4 +284,4 @@ footer { background: var(--ink); padding: 44px 0; }
 
 @media (max-width: 640px) {
   .horario-grid { grid-template-columns: 1fr; max-width: 400px; }
-}s
+}
