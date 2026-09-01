@@ -55,57 +55,30 @@ async function guardarPedidoEnSupabase(datos) {
   const carrito = obtenerCarrito();
   const { subtotal, descuento, total, aplicaDescuento } = calcularTotalConDescuento();
 
-  // 1. Buscar o crear cliente por teléfono
-  let customerId = null;
-  const { data: clienteExistente } = await db
-    .from('customers')
-    .select('id')
-    .eq('telefono', datos.telefono)
-    .maybeSingle();
-
-  if (clienteExistente) {
-    customerId = clienteExistente.id;
-  } else {
-    const { data: nuevoCliente, error: errCliente } = await db
-      .from('customers')
-      .insert({ telefono: datos.telefono, nombre: datos.nombre })
-      .select('id')
-      .single();
-    if (errCliente) throw errCliente;
-    customerId = nuevoCliente.id;
-  }
-
-  // 2. Crear el pedido
-  const { data: pedido, error: errPedido } = await db
-    .from('orders')
-    .insert({
-      customer_id: customerId,
-      nombre_cliente: datos.nombre,
-      telefono: datos.telefono,
-      comuna: datos.comuna,
-      direccion: datos.direccion || null,
-      subtotal, descuento_aplicado: descuento, total,
-      es_reserva_anticipada: aplicaDescuento,
-      estado: 'recibido',
-      estado_pago: 'pendiente',
-    })
-    .select('id, codigo_seguimiento')
-    .single();
-
-  if (errPedido) throw errPedido;
-
-  // 3. Crear los items del pedido
+  // Todo el guardado (cliente + pedido + items) se hace en una sola función
+  // de base de datos (crear_pedido, SECURITY DEFINER) para que el pedido no
+  // dependa de políticas de RLS de lectura pública en `orders`/`order_items`.
   const items = carrito.map(i => ({
-    order_id: pedido.id,
     menu_item_id: i.id,
     nombre_producto: i.nombre,
     precio_unitario: i.precio,
     cantidad: i.cantidad,
   }));
-  const { error: errItems } = await db.from('order_items').insert(items);
-  if (errItems) throw errItems;
 
-  return pedido;
+  const { data, error } = await db.rpc('crear_pedido', {
+    p_nombre: datos.nombre,
+    p_telefono: datos.telefono,
+    p_comuna: datos.comuna,
+    p_direccion: datos.direccion || null,
+    p_subtotal: subtotal,
+    p_descuento: descuento,
+    p_total: total,
+    p_es_reserva: aplicaDescuento,
+    p_items: items,
+  });
+
+  if (error) throw error;
+  return data[0]; // { id, codigo_seguimiento }
 }
 
 async function confirmarPedido(event) {
