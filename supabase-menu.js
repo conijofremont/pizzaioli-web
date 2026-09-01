@@ -14,7 +14,6 @@ function nombreCorto(nombre) {
 
 const FOTOS_PIZZA = {
   'Margarita': 'margarita.png',
-  'Pepperoni': 'pepperoni.png',
   'Napolitana': 'napolitana.png',
   'Española': 'española.png',
   'Hawaiana': 'hawaiana.png',
