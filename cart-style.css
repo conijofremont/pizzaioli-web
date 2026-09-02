@@ -48,8 +48,7 @@
 }
 .fusion-card .pizza-photo { background: radial-gradient(circle at 50% 40%, var(--bone) 0%, #EDE0D5 78%); }
 
-.pizza-body { padding: 16px 18px 18px; display: flex; flex-direction: column; flex: 1; }
-
+.pizza-body { width: 100%; padding: 16px 18px 18px; display: flex; flex-direction: column; flex: 1; }
 .pizza-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 4px; }
 .pizza-head h4 { font-family: 'Instrument Serif', serif; font-weight: 400; font-size: 21px; color: var(--ink); line-height: 1.2; }
 .pizza-price {
